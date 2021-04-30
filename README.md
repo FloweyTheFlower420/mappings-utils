@@ -1,2 +1,36 @@
 # mappings-utils
-I can't seem to get forge's srgutils to work so I wrote my own. Simple, easier to use.
+Utilites for my modded-mc related projects (java)
+Features:
+- mappings processing
+- shorthands for less verbose code
+
+Install:
+Gradle:
+```
+repositories {
+    ... whatever you had here before
+    maven { url = "http://maven.floweytf.com/releases/" }
+}
+```
+Add the dep
+```
+dependencies {
+    implementation 'com.floweytf.utils:utils:1.1'
+}
+```
+Maven: 
+```xml
+<repository>
+      <id>flowey</id>
+      <name>whatever</name>
+      <url>http://maven.floweytf.com/releases/</url>
+</repository>
+```
+Add the dep
+```xml
+<dependency>
+      <groupId>com.floweytf.utils</groupId>
+      <artifactId>utils</artifactId>
+      <version>1.1</version>
+</dependency>
+```
