@@ -15,7 +15,7 @@ repositories {
 Add the dep
 ```
 dependencies {
-    implementation 'com.floweytf.utils:utils:1.1'
+    implementation 'com.floweytf.utils:utils:${version}'
 }
 ```
 Maven: 
@@ -31,6 +31,6 @@ Add the dep
 <dependency>
       <groupId>com.floweytf.utils</groupId>
       <artifactId>utils</artifactId>
-      <version>1.1</version>
+      <version>${version}</version>
 </dependency>
 ```
