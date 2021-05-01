@@ -54,4 +54,6 @@ public interface IMappings {
      * @return the mapped named of the method
      */
     MethodMapping mapMethod(String className, String methodName, String returnType, String... args);
+
+    IMappings append(IMappings other);
 }

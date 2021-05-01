@@ -1,6 +1,10 @@
 package com.floweytf.utils.streams;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.function.Consumer;
@@ -10,6 +14,7 @@ import java.util.stream.Stream;
 
 public class InputStreamUtils {
     private InputStream stream;
+    private Gson gson = new Gson();
     private InputStreamUtils(InputStream stream) {
         this.stream = stream;
     }
@@ -75,5 +80,9 @@ public class InputStreamUtils {
 
     public void forEach(Consumer<String> f ) {
         toReaderBuffered().lines().forEach(f);
+    }
+
+    public <T> T asJson(Class<T> classOfT) throws JsonSyntaxException {
+        return gson.fromJson(toReaderStream(), classOfT);
     }
 }
