@@ -44,6 +44,10 @@ public class InputStreamUtils {
         return getStream(p.toFile());
     }
 
+    public static InputStreamUtils getStreamClassPath(String s) throws ClassNotFoundException {
+        return getStream(InputStreamUtils.class.getResourceAsStream(s));
+    }
+
     public static InputStreamUtils getStream(InputStream s) {
         return new InputStreamUtils(s);
     }
