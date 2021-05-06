@@ -86,6 +86,14 @@ public class InputStreamUtils {
         toReaderBuffered().lines().forEach(f);
     }
 
+    public void parallelForEach(Consumer<String> f ) {
+        toReaderBuffered().lines().parallel().forEach(f);
+    }
+
+    public Stream<String> parallel(Consumer<String> f ) {
+        return toReaderBuffered().lines().parallel();
+    }
+
     public <T> T asJson(Class<T> classOfT) throws JsonSyntaxException {
         return gson.fromJson(toReaderStream(), classOfT);
     }

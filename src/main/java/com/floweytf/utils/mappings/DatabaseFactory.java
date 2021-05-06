@@ -4,18 +4,23 @@ import com.floweytf.utils.streams.InputStreamUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class DatabaseFactory {
 
-    public static IMappings readFromFile(String fileName) {
+    /**
+     * @param fileName The name of the file
+     * @return The parsed mappings. The format for which is determined by the file extension.
+     */
+    public static Mappings readFromFile(String fileName) {
         //if(fileName.startsWith(".csrg"))
 
         return null;
     }
 
-    public static IMappings readFromSources(MappingType t, InputStreamUtils... inputs) {
-        IMappings source = MappingType.getMethodFromType(t, inputs[0]);
+    public static Mappings readFromSources(MappingType t, InputStreamUtils... inputs) {
+        Mappings source = MappingType.getMethodFromType(t, inputs[0]);
         for (int i = 1; i < inputs.length; i++) {
             source.append(MappingType.getMethodFromType(t, inputs[i]));
         }
@@ -23,13 +28,19 @@ public class DatabaseFactory {
         return source;
     }
 
-    public static IMappings readCsrg(InputStreamUtils stream) {
+    /**
+     * @param stream The stream to read from
+     * @return The parsed mappings.
+     */
+    public static Mappings readCsrg(InputStreamUtils stream) {
         Map<String, String> classMappings = new ConcurrentHashMap<>();
         Map<String, String> _classMappings = new ConcurrentHashMap<>();
         Map<String, String> fieldMappings = new ConcurrentHashMap<>();
         Map<String, String> methodMappings = new ConcurrentHashMap<>();
 
-        stream.forEach(line -> {
+        Queue<String> queue = new ConcurrentLinkedQueue<>();
+
+        stream.parallelForEach(line -> {
             if (line.startsWith("#"))
                 return;
 
@@ -38,9 +49,11 @@ public class DatabaseFactory {
                 classMappings.put(names[0], names[1]);
                 _classMappings.put(names[1], names[0]);
             }
+            else
+                queue.add(line);
         });
 
-        stream.forEach(line -> {
+        queue.stream().parallel().forEach(line -> {
             if (line.startsWith("#"))
                 return;
             String[] names = line.split(" ");
@@ -54,37 +67,42 @@ public class DatabaseFactory {
             }
         });
 
-        return new Mappings(
+        return new MappingsImpl(
             classMappings,
             fieldMappings,
             methodMappings
         );
     }
 
-    public static IMappings readSrg(InputStreamUtils stream) {
+    /**
+     * @param stream The stream to read from
+     * @return The parsed mappings.
+     */
+    public static Mappings readSrg(InputStreamUtils stream) {
         Map<String, String> classMappings = new ConcurrentHashMap<>();
-        Map<String, String> _classMappings = new ConcurrentHashMap<>();
         Map<String, String> fieldMappings = new ConcurrentHashMap<>();
         Map<String, String> methodMappings = new ConcurrentHashMap<>();
 
-        stream.forEach(line -> {
+        Queue<String> queue = new ConcurrentLinkedQueue<>();
+
+        stream.parallelForEach(line -> {
             if(line.startsWith("#"))
                 return;
 
             String[] names = line.split(" ");
-            if(names.length == 3) {
+            if(names.length == 3)
                 classMappings.put(names[1], names[2]);
-                _classMappings.put(names[2], names[1]);
-            }
+            else
+                queue.add(line);
         });
 
-        stream.forEach(line -> {
+        queue.stream().parallel().forEach(line -> {
             if (line.startsWith("#"))
                 return;
             String[] names = line.split(" ");
             if (names.length == 3)
                 fieldMappings.put(Utils.splitClassMember(names[1]),Utils.splitClassMember(names[2]));
-            else if(names.length == 4) {
+            else if(names.length == 5) {
                 methodMappings.put(
                     Utils.splitClassMember(names[1]) + " " + names[2],
                     Utils.splitClassMember(names[3]) + " " + names[4]
@@ -92,12 +110,12 @@ public class DatabaseFactory {
             }
         });
 
-        return new Mappings(
+        return new MappingsImpl(
             classMappings,
             fieldMappings,
             methodMappings
         );
     }
 
-    public static IMappings readSrgWithMCP(String srg, String csv) { return null; }
+    public static Mappings readSrgWithMCP(String srg, String csv) { return null; }
 }

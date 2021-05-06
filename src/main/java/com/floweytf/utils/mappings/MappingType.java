@@ -12,13 +12,13 @@ public enum MappingType {
     TSRG,
     TSRG2;
 
-    private static final Map<MappingType, Function<InputStreamUtils, IMappings>> TYPE_TO_LAMBADA = new HashMap<>();
+    private static final Map<MappingType, Function<InputStreamUtils, Mappings>> TYPE_TO_LAMBADA = new HashMap<>();
 
     static {
         TYPE_TO_LAMBADA.put(CSRG, DatabaseFactory::readCsrg);
     }
 
-    static IMappings getMethodFromType(MappingType type, InputStreamUtils utils) {
+    static Mappings getMethodFromType(MappingType type, InputStreamUtils utils) {
         return TYPE_TO_LAMBADA.get(type).apply(utils);
     }
 }

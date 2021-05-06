@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.floweytf.utils</groupId>
   <artifactId>utils</artifactId>
-  <version>1.1</version>
+  <version>1.1.2-hotfix</version>
   <dependencies>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -16,6 +16,12 @@
       <groupId>org.jetbrains</groupId>
       <artifactId>annotations</artifactId>
       <version>20.1.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.8.6</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
