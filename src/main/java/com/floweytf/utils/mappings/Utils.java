@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 class Utils {
     private static final Set<String> JVM_PRIMITIVES = ImmutableSet.of("Z", "B", "C", "S", "I", "J", "F", "D");
-    private static final Pattern FIND_CLASS = Pattern.compile("L\1;");
+    private static final Pattern FIND_CLASS = Pattern.compile("L([^;]*);");
 
     static Map<String, String> reverseMap(Map<String, String> map) {
         return map.entrySet().stream().collect(Collectors.toConcurrentMap(Map.Entry::getValue, Map.Entry::getKey));

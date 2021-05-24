@@ -15,7 +15,9 @@ public enum MappingType {
     private static final Map<MappingType, Function<InputStreamUtils, Mappings>> TYPE_TO_LAMBADA = new HashMap<>();
 
     static {
-        TYPE_TO_LAMBADA.put(CSRG, DatabaseFactory::readCsrg);
+        TYPE_TO_LAMBADA.put(CSRG, MappingsFactory::readCsrg);
+        TYPE_TO_LAMBADA.put(SRG, MappingsFactory::readSrg);
+
     }
 
     static Mappings getMethodFromType(MappingType type, InputStreamUtils utils) {

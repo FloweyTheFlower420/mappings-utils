@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.floweytf.utils</groupId>
   <artifactId>utils</artifactId>
-  <version>1.1.2-hotfix</version>
+  <version>1.3.1</version>
   <dependencies>
     <dependency>
       <groupId>com.google.guava</groupId>

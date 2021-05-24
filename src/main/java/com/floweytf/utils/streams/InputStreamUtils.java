@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class InputStreamUtils {
-    private InputStream stream;
-    private Gson gson = new Gson();
+    private final InputStream stream;
+    private final Gson gson = new Gson();
     private InputStreamUtils(InputStream stream) {
         this.stream = stream;
     }
@@ -84,6 +84,12 @@ public class InputStreamUtils {
 
     public void forEach(Consumer<String> f ) {
         toReaderBuffered().lines().forEach(f);
+    }
+
+    public void singleThreadForEach(Consumer<String> s) throws IOException {
+        String line = null;
+        while((line = toReaderBuffered().readLine()) != null)
+            s.accept(line);
     }
 
     public void parallelForEach(Consumer<String> f ) {
