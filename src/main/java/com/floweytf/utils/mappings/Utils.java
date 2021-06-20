@@ -2,10 +2,8 @@ package com.floweytf.utils.mappings;
 
 import com.google.common.collect.ImmutableSet;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -48,7 +46,7 @@ class Utils {
         StringBuffer out = new StringBuffer();
         while (matcher.find()) {
             String r = map.getOrDefault(matcher.group(1), matcher.group(1));
-            matcher.appendReplacement(out, r.replace("$", "\\$"));
+            matcher.appendReplacement(out, "L" + r.replace("$", "\\$") + ";");
         }
         matcher.appendTail(out);
         return out.toString();
@@ -62,6 +60,6 @@ class Utils {
     }
 
     static Map<String, String> concat(Map<String, String> map1, Map<String, String>map2) {
-        return Stream.concat(map1.entrySet().stream(), map2.entrySet().stream()).parallel().collect(Collectors.toConcurrentMap(Map.Entry::getKey, Map.Entry::getValue));
+        return Stream.concat(map1.entrySet().stream(), map2.entrySet().stream()).collect(Collectors.toConcurrentMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

@@ -121,7 +121,7 @@ public class MappingsFactory {
         );
     }
 
-    public static Mappings readTsrg(InputStreamUtils stream) throws IOException {
+    public static Mappings readTsrg(InputStreamUtils stream) {
         Map<String, String> classMappings = new ConcurrentHashMap<>();
 
         List<String> list = new LinkedList<>();

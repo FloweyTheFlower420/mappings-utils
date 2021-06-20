@@ -17,7 +17,7 @@ public enum MappingType {
     static {
         TYPE_TO_LAMBADA.put(CSRG, MappingsFactory::readCsrg);
         TYPE_TO_LAMBADA.put(SRG, MappingsFactory::readSrg);
-
+        TYPE_TO_LAMBADA.put(TSRG, MappingsFactory::readTsrg);
     }
 
     static Mappings getMethodFromType(MappingType type, InputStreamUtils utils) {
