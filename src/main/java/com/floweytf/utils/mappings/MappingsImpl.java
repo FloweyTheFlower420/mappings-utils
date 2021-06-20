@@ -1,6 +1,7 @@
 package com.floweytf.utils.mappings;
 
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * The format for classMapping:
@@ -93,6 +94,10 @@ class MappingsImpl implements Mappings {
 
     @Override
     public Mappings append(Mappings other) {
-        return null;
+        return new MappingsImpl(
+            Utils.concat(c, other.getClassMappings()),
+            Utils.concat(f, other.getFieldMappings()),
+            Utils.concat(m, other.getMethodMappings())
+        );
     }
 }

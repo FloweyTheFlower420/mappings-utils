@@ -2,9 +2,7 @@ package com.floweytf.utils.mappings;
 
 import com.floweytf.utils.streams.InputStreamUtils;
 import com.floweytf.utils.streams.OutputStreamUtils;
-import jdk.internal.util.xml.impl.Input;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,7 +10,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class MappingsFactory {
 
@@ -45,9 +42,9 @@ public class MappingsFactory {
         Map<String, String> fieldMappings = new ConcurrentHashMap<>();
         Map<String, String> methodMappings = new ConcurrentHashMap<>();
 
-        Queue<String> queue = new ConcurrentLinkedQueue<>();
+        List<String> list = new LinkedList<>();
 
-        stream.parallelForEach(line -> {
+        stream.forEach(line -> {
             if (line.startsWith("#"))
                 return;
 
@@ -57,10 +54,10 @@ public class MappingsFactory {
                 _classMappings.put(names[1], names[0]);
             }
             else
-                queue.add(line);
+                list.add(line);
         });
 
-        queue.stream().parallel().forEach(line -> {
+        list.forEach(line -> {
             if (line.startsWith("#"))
                 return;
             String[] names = line.split(" ");
@@ -90,9 +87,9 @@ public class MappingsFactory {
         Map<String, String> fieldMappings = new ConcurrentHashMap<>();
         Map<String, String> methodMappings = new ConcurrentHashMap<>();
 
-        Queue<String> queue = new ConcurrentLinkedQueue<>();
+        List<String> list = new LinkedList<>();
 
-        stream.parallelForEach(line -> {
+        stream.forEach(line -> {
             if(line.startsWith("#"))
                 return;
 
@@ -100,10 +97,10 @@ public class MappingsFactory {
             if(names.length == 3 && names[0].equals("CL:"))
                 classMappings.put(names[1], names[2]);
             else
-                queue.add(line);
+                list.add(line);
         });
 
-        queue.stream().parallel().forEach(line -> {
+        list.forEach(line -> {
             if (line.startsWith("#"))
                 return;
             String[] names = line.split(" ");
@@ -129,10 +126,10 @@ public class MappingsFactory {
 
         List<String> list = new LinkedList<>();
 
-        stream.parallelForEach(line -> {
+        stream.forEach(line -> {
             if(line.startsWith("#"))
                 return;
-            if(line.startsWith("\t")) {
+            if(!line.startsWith("\t")) {
                 String[] names = line.split(" ");
                 classMappings.put(names[0], names[1]);
             }
@@ -146,7 +143,7 @@ public class MappingsFactory {
 
         String obfClassName = null;
         for(String line : list) {
-            if(line.startsWith("\t"))
+            if(!line.startsWith("\t"))
                 obfClassName = line.split(" ")[0];
             else {
                 String[] name = line.replaceFirst("\t", "").split(" ");

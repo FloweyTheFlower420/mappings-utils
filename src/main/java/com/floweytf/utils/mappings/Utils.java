@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class Utils {
     private static final Set<String> JVM_PRIMITIVES = ImmutableSet.of("Z", "B", "C", "S", "I", "J", "F", "D");
@@ -46,8 +47,8 @@ class Utils {
 
         StringBuffer out = new StringBuffer();
         while (matcher.find()) {
-            String r = map.get(matcher.group(1));
-            matcher.appendReplacement(out, r);
+            String r = map.getOrDefault(matcher.group(1), matcher.group(1));
+            matcher.appendReplacement(out, r.replace("$", "\\$"));
         }
         matcher.appendTail(out);
         return out.toString();
@@ -58,5 +59,9 @@ class Utils {
         int index = builder.lastIndexOf("/");
         builder.replace(index,1 + index, " ");
         return builder.toString();
+    }
+
+    static Map<String, String> concat(Map<String, String> map1, Map<String, String>map2) {
+        return Stream.concat(map1.entrySet().stream(), map2.entrySet().stream()).parallel().collect(Collectors.toConcurrentMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }
