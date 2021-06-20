@@ -62,10 +62,10 @@ public class MappingsFactory {
                 return;
             String[] names = line.split(" ");
             if (names.length == 3)
-                fieldMappings.put(_classMappings.get(names[0]) + " " + names[1], names[0] + " " + names[2]);
+                fieldMappings.put(_classMappings.getOrDefault(names[0], names[0]) + " " + names[1], names[0] + " " + names[2]);
             else if (names.length == 4) {
                 methodMappings.put(
-                    _classMappings.get(names[0]) + " " + names[1] + " " + Utils.remapMethodSignature(names[2], _classMappings),
+                    _classMappings.getOrDefault(names[0], names[0]) + " " + names[1] + " " + Utils.remapMethodSignature(names[2], _classMappings),
                     names[0] + " " + names[3] + " " + names[2]
                 );
             }
