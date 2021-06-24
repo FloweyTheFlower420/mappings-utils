@@ -3,11 +3,9 @@ package com.floweytf.utils.mappings;
 import com.floweytf.utils.streams.InputStreamUtils;
 import com.floweytf.utils.streams.OutputStreamUtils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -17,10 +15,15 @@ public class MappingsFactory {
      * @param fileName The name of the file
      * @return The parsed mappings. The format for which is determined by the file extension.
      */
-    public static Mappings readFromFile(String fileName) {
-        //if(fileName.startsWith(".csrg"))
-
-        return null;
+    public static Mappings readFromFile(String fileName) throws FileNotFoundException {
+        InputStreamUtils stream = InputStreamUtils.getStreamFile(fileName);
+        if(fileName.endsWith(".csrg"))
+            return readCsrg(stream);
+        if(fileName.endsWith(".tsrg"))
+            return readTsrg(stream);
+        if(fileName.endsWith(".srg"))
+            return readSrg(stream);
+        throw new IllegalStateException("Illegal file ending");
     }
 
     public static Mappings readFromSources(MappingType t, InputStreamUtils... inputs) {
@@ -42,9 +45,9 @@ public class MappingsFactory {
         Map<String, String> fieldMappings = new ConcurrentHashMap<>();
         Map<String, String> methodMappings = new ConcurrentHashMap<>();
 
-        List<String> list = new LinkedList<>();
+        Queue<String> queue = new ConcurrentLinkedQueue<>();
 
-        stream.forEach(line -> {
+        stream.parallelForEach(line -> {
             if (line.startsWith("#"))
                 return;
 
@@ -54,10 +57,10 @@ public class MappingsFactory {
                 _classMappings.put(names[1], names[0]);
             }
             else
-                list.add(line);
+                queue.add(line);
         });
 
-        list.forEach(line -> {
+        queue.stream().parallel().forEach(line -> {
             if (line.startsWith("#"))
                 return;
             String[] names = line.split(" ");
@@ -87,9 +90,9 @@ public class MappingsFactory {
         Map<String, String> fieldMappings = new ConcurrentHashMap<>();
         Map<String, String> methodMappings = new ConcurrentHashMap<>();
 
-        List<String> list = new LinkedList<>();
+        Queue<String> queue = new ConcurrentLinkedQueue<>();
 
-        stream.forEach(line -> {
+        stream.parallelForEach(line -> {
             if(line.startsWith("#"))
                 return;
 
@@ -97,10 +100,10 @@ public class MappingsFactory {
             if(names.length == 3 && names[0].equals("CL:"))
                 classMappings.put(names[1], names[2]);
             else
-                list.add(line);
+                queue.add(line);
         });
 
-        list.forEach(line -> {
+        queue.stream().parallel().forEach(line -> {
             if (line.startsWith("#"))
                 return;
             String[] names = line.split(" ");
@@ -124,9 +127,9 @@ public class MappingsFactory {
     public static Mappings readTsrg(InputStreamUtils stream) {
         Map<String, String> classMappings = new ConcurrentHashMap<>();
 
-        List<String> list = new LinkedList<>();
+        Queue<String> queue = new ConcurrentLinkedQueue<>();
 
-        stream.forEach(line -> {
+        stream.parallelForEach(line -> {
             if(line.startsWith("#"))
                 return;
             if(!line.startsWith("\t")) {
@@ -134,7 +137,7 @@ public class MappingsFactory {
                 classMappings.put(names[0], names[1]);
             }
 
-            list.add(line);
+            queue.add(line);
         });
 
         Map<String, String> methodMappings = new ConcurrentHashMap<>();
@@ -142,7 +145,7 @@ public class MappingsFactory {
 
 
         String obfClassName = null;
-        for(String line : list) {
+        for(String line : queue) {
             if(!line.startsWith("\t"))
                 obfClassName = line.split(" ")[0];
             else {
@@ -169,7 +172,30 @@ public class MappingsFactory {
         );
     }
 
-    public static Mappings readSrgWithMCP(String srg, String csv) { return null; }
+    public static Mappings applyMCP(Mappings mappings, InputStreamUtils method, InputStreamUtils field) {
+        Map<String, String> mcp = new ConcurrentHashMap<>();
+        method.parallelForEach(s -> {
+            String[] elements = s.split(",");
+            mcp.put(elements[0], elements[1]);
+        });
+
+        field.parallelForEach(s -> {
+            String[] elements = s.split(",");
+            mcp.put(elements[0], elements[1]);
+        });
+
+        mappings.getMethodMappings().entrySet().stream().parallel().forEach(pair -> {
+            String[] parts = pair.getValue().split(" ");
+            pair.setValue(parts[0] + mcp.getOrDefault(parts[0], parts[0]) + parts[2]);
+        });
+
+        mappings.getFieldMappings().entrySet().stream().parallel().forEach(pair -> {
+            String[] parts = pair.getValue().split(" ");
+            pair.setValue(parts[0] + mcp.getOrDefault(parts[0], parts[0]));
+        });
+
+        return mappings;
+    }
 
     public static void writeSrg(Mappings mappings, OutputStreamUtils stream) {
         mappings.getClassMappings().forEach((key, value) -> stream.writeln("CL: " + key + " " + value));

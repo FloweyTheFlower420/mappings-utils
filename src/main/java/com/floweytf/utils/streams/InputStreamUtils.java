@@ -7,6 +7,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.concurrent.ForkJoinPool;
 import java.util.function.Consumer;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -93,7 +94,19 @@ public class InputStreamUtils {
     }
 
     public void parallelForEach(Consumer<String> f ) {
-        toReaderBuffered().lines().parallel().forEach(f);
+        parallelForEach(f, 8);
+    }
+
+    public void parallelForEach(Consumer<String> f, int threads) {
+        try {
+            ForkJoinPool myPool = new ForkJoinPool(8);
+            myPool.submit(() ->
+                toReaderBuffered().lines().parallel().forEach(f)
+            ).get();
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Stream<String> parallel(Consumer<String> f ) {
