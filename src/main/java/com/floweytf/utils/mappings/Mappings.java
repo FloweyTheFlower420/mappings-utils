@@ -15,6 +15,7 @@ public interface Mappings {
      * then, the merged mapping is a -> c
      * if other does not have a mapping for b, the output is a -> b
      * if other has b -> c, but this does not have any mapping to b, do not add that mapping
+     *
      * @return A copy of a joined mapping between this and other
      */
     Mappings merge(Mappings other);
@@ -48,9 +49,9 @@ public interface Mappings {
     FieldMapping mapField(String className, String fieldName);
 
     /**
-     * @param className The name of the class
+     * @param className  The name of the class
      * @param methodName The name of the method
-     * @param args The arguments of the method
+     * @param args       The arguments of the method
      * @return the mapped named of the method
      */
     MethodMapping mapMethod(String className, String methodName, String returnType, String... args);

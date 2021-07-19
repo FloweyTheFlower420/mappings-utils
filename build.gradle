@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'com.floweytf.utils'
-version '0.3'
+version '0.5'
 
 repositories {
     mavenCentral()
@@ -15,6 +15,8 @@ dependencies {
     implementation 'com.google.guava:guava:30.1.1-jre'
     implementation 'org.jetbrains:annotations:20.1.0'
     implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'org.eclipse.jetty:jetty-util:9.4.9.v20180320'
+    implementation 'org.slf4j:slf4j-api:1.7.13'
 }
 
 Properties props = new Properties()
