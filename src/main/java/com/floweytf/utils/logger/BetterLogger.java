@@ -1,6 +1,5 @@
 package com.floweytf.utils.logger;
 
-import org.eclipse.jetty.util.log.Logger;
 import org.slf4j.helpers.MessageFormatter;
 
 import java.io.PrintWriter;
@@ -12,7 +11,7 @@ import java.util.List;
 
 import static com.floweytf.utils.logger.JavaChalk.*;
 
-public class BetterLogger implements Logger {
+public class BetterLogger {
     public static final int FATAL = 0;
     public static final int ERROR = 1;
     public static final int WARN = 2;
@@ -52,6 +51,7 @@ public class BetterLogger implements Logger {
         }
     }
 
+
     protected String format(String s, Object... o) {
         return MessageFormatter.arrayFormat(s, o).getMessage();
     }
@@ -88,27 +88,18 @@ public class BetterLogger implements Logger {
         return this;
     }
 
-    @Override
-    public Logger getLogger(String name) {
-        return this;
-    }
-
-    @Override
     public void ignore(Throwable ignored) {
         writeLnTransport("ignored: " + ignored.toString(), INFO);
     }
 
-    @Override
     public boolean isDebugEnabled() {
         return true;
     }
 
-    @Override
     public void setDebugEnabled(boolean enabled) {
 
     }
 
-    @Override
     public String getName() {
         return loggerName;
     }
@@ -130,17 +121,17 @@ public class BetterLogger implements Logger {
         writeLnTransport(format(msg, obj), DEBUG);
     }
 
-    @Override
+    
     public void debug(String msg, long value) {
         writeLnTransport(msg, DEBUG);
     }
 
-    @Override
+    
     public void debug(Throwable thrown) {
         writeLnTransport(thrown.toString(), DEBUG);
     }
 
-    @Override
+    
     public void debug(String msg, Throwable thrown) {
         writeLnTransport(msg + '\n' + thrown.toString(), DEBUG);
     }
@@ -162,12 +153,12 @@ public class BetterLogger implements Logger {
         writeLnTransport(format(msg, obj), INFO);
     }
 
-    @Override
+    
     public void info(Throwable thrown) {
         writeLnTransport(thrown.toString(), INFO);
     }
 
-    @Override
+    
     public void info(String msg, Throwable thrown) {
         writeLnTransport(msg + thrown.toString(), INFO);
     }
@@ -195,12 +186,12 @@ public class BetterLogger implements Logger {
         writeLnTransport(format(msg, obj), WARN);
     }
 
-    @Override
+    
     public void warn(Throwable thrown) {
         writeLnTransport(thrown.toString(), WARN);
     }
 
-    @Override
+    
     public void warn(String msg, Throwable thrown) {
         writeLnTransport(msg + thrown.toString(), WARN);
     }
