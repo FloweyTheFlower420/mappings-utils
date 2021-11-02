@@ -1,5 +1,7 @@
 package com.floweytf.utils.streams;
 
+import com.floweytf.utils.streams.stdstreams.IStandardByteReader;
+import com.floweytf.utils.streams.stdstreams.StandardByteReader;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -116,5 +118,9 @@ public class IStreamEx {
 
     public <T> T asJson(Class<T> classOfT) throws JsonSyntaxException {
         return gson.fromJson(toReaderStream(), classOfT);
+    }
+
+    public IStandardByteReader getStandardStream() {
+        return new StandardByteReader(stream);
     }
 }

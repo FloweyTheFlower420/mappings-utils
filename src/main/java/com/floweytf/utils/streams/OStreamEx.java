@@ -1,5 +1,8 @@
 package com.floweytf.utils.streams;
 
+import com.floweytf.utils.Utils;
+import com.floweytf.utils.streams.stdstreams.IStandardByteWriter;
+import com.floweytf.utils.streams.stdstreams.StandardByteWriter;
 import com.google.gson.Gson;
 
 import java.io.*;
@@ -50,21 +53,20 @@ public class OStreamEx {
     @Override
     public String toString() {
         if (stream instanceof ByteArrayOutputStream) {
-            return ((ByteArrayOutputStream) stream).toString();
+            return stream.toString();
         }
         throw new IllegalStateException("Stream is not created to write to string!");
     }
 
     public void write(Object s) {
-        try {
-            stream.write(s.toString().getBytes());
-        }
-        catch (IOException e) {
-            throw new IllegalStateException("Something went wrong!", e);
-        }
+        Utils.rethrow(() -> stream.write(s.toString().getBytes()));
     }
 
     public void writeln(Object s) {
         write(s.toString() + '\n');
+    }
+
+    public IStandardByteWriter getStandardStream() {
+        return new StandardByteWriter(stream);
     }
 }
