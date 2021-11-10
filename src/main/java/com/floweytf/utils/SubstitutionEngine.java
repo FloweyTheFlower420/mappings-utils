@@ -7,20 +7,14 @@ import java.util.regex.Pattern;
 
 public class SubstitutionEngine {
     private final Pattern pattern;
-    private static final Map<Character, Character> CLOSER = new HashMap<Character, Character>() {{
-        put('[', ']');
-        put('{', '}');
-        put('(', ')');
-        put('<', '>');
-    }};
-
-    // valid characters is [{(<
+    // valid characters is [{(
     public SubstitutionEngine(String startCh) {
-        String endCh = startCh.chars().filter(v -> CLOSER.containsKey((char)v))
-            .map(v -> CLOSER.get((char)v)).collect(StringBuilder::new,
-            StringBuilder::appendCodePoint, StringBuilder::append)
-            .toString();
-        pattern = Pattern.compile("\\Q$" + startCh + "\\E([a-z]+)\\Q" + endCh + "\\E");
+        StringBuilder sb = new StringBuilder();
+        startCh.chars().forEach(i -> {
+            sb.append(Utils.getMatchingChar((char)i));
+        });
+
+        pattern = Pattern.compile("\\Q$" + startCh + "\\E([a-z]+)\\Q" + sb.toString() + "\\E");
     }
 
     public SubstitutionEngine() {
@@ -30,8 +24,9 @@ public class SubstitutionEngine {
     public String substitution(String str, Map<String, String> symbols) {
         StringBuffer buffer = new StringBuffer();
         Matcher matcher = pattern.matcher(str);
-        for(int i = 1; i <= matcher.groupCount(); i++) {
-            String entry = matcher.group(i);
+
+        while(matcher.find()) {
+            String entry = matcher.group(1);
             entry = symbols.getOrDefault(entry, entry);
             matcher.appendReplacement(buffer, entry);
         }
@@ -40,8 +35,8 @@ public class SubstitutionEngine {
     }
 
     public static void main(String... a) {
-        SubstitutionEngine substitutionEngine = new SubstitutionEngine();
-        String str = "${test} FOASDALSDJAKL:SDJ ${foo}";
+        SubstitutionEngine substitutionEngine = new SubstitutionEngine("[[");
+        String str = "$[[test]] FOASDALSDJAKL:SDJ $[[foo]]";
         str = substitutionEngine.substitution(str, new HashMap<String, String>(){{
             put("test", "123");
         }});

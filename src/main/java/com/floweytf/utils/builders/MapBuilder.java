@@ -9,7 +9,7 @@ import java.util.function.Supplier;
  * please dont break this :(
  */
 public class MapBuilder <K, V, T extends Map<K, V>> {
-    private Map<K, V> type;
+    private final Map<K, V> type;
 
     private MapBuilder(Supplier<T> supplier) {
         type = supplier.get();

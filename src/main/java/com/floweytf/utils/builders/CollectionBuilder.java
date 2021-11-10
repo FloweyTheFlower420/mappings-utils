@@ -1,10 +1,7 @@
 package com.floweytf.utils.builders;
 
-import com.floweytf.utils.Utils;
-import com.floweytf.utils.lazy.Fast;
-import com.floweytf.utils.lazy.Lazy;
-
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.function.Supplier;
 
 /* cursed collection builder
